@@ -26,6 +26,7 @@ public class WindowRPG {
         frame.setVisible(true);
 
         rpgButOk.requestFocus();
+        new Thread(rpgButOk).start();
     }
 
 }

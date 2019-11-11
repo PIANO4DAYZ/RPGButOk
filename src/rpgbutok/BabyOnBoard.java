@@ -63,4 +63,12 @@ public class BabyOnBoard {
         return posX;
     }
 
+    public int getDX() {
+        return dx;
+    }
+
+    public void setDX(int dx) {
+        this.dx = dx;
+    }
+
 }

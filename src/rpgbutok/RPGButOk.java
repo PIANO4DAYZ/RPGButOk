@@ -19,12 +19,14 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public final class RPGButOk extends JPanel {
+public final class RPGButOk extends JPanel implements Runnable {
 
     //BabyOnBoard vro = null;
     ColumbusGuy[][] finalmap = new ColumbusGuy[20][20];
     NormalRock[][] rocks = new NormalRock[20][20];
     ArrayList<BabyOnBoard> babies = new ArrayList<>();
+    ArrayList<Vore1255> vores = new ArrayList<>();
+    int frameShift;
     int xB = 0;
     int yB = 0;
     int tR = 0;
@@ -35,21 +37,25 @@ public final class RPGButOk extends JPanel {
     int imageY = 0;
     int xLength = 150;
     int yLength = 100;
+    boolean bruh;
     boolean pressed = false;
-    boolean sad = false;
-    
-    private static BufferedImage ammo, piece;
+    boolean sad = false, isRight = true;
+
+    private static BufferedImage ammo, piece, god, pieceTwo;
 
     static {
         try {
+            god = ImageIO.read(new File("oh no.png"));
             ammo = ImageIO.read(new File("theAMMUNITION.png"));
             piece = ImageIO.read(new File("deepfried_1568835288138.png"));
+            pieceTwo = ImageIO.read(new File("chomp.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public RPGButOk() throws IOException {
+        bruh = false;
         for (int r = 0; r < finalmap.length; r++) {
             for (int c = 0; c < finalmap[r].length; c++) {
                 tR = r % 5;
@@ -63,7 +69,7 @@ public final class RPGButOk extends JPanel {
             }
 
         }
-        
+
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -125,6 +131,10 @@ public final class RPGButOk extends JPanel {
 
                     rocks[5 * xB + x][5 * yB + y].paint(g);
                 }
+                for (int vore = 0; vore < vores.size(); vore++) {
+
+                    vores.get(vore).paint(g);
+                }
                 // finalmap[x][y].paint(g);
             }
         }
@@ -139,7 +149,15 @@ public final class RPGButOk extends JPanel {
         //} catch (IOException ex) {
         //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         //}
-        g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+        if (frameShift < 15) {
+            g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+        } else {
+            if (isRight) {
+                g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
+            } else {
+                g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
+            }
+        }
         for (int z = 0; z < babies.size(); z++) {
             BabyOnBoard baby = babies.get(z);
             baby.moveBaby();
@@ -152,60 +170,29 @@ public final class RPGButOk extends JPanel {
         }
 
         if (sad && counter % 20 == 0) {
-            babies.add(new BabyOnBoard(imageX + 50, imageY + 25));
+            BabyOnBoard bb = new BabyOnBoard(imageX + 50, imageY + 25);
+            if (isRight) {
+                bb.setDX(Math.abs(bb.getDX()));
+            } else {
+                bb.setDX(-Math.abs(bb.getDX()));
+            }
+            babies.add(bb);
             //babies.add(new BabyOnBoard())
             //window.drawImage(ammo, imageX + 35, imageY + 20, 50, 50, null);
             //sad = false;
             counter = 0;
         }
         counter++;
-        g.setFont(new Font("Arial", Font.BOLD, 25));
+        // g.setFont(new Font("Arial", Font.BOLD, 25));
+        if (bruh) {
+            vores.add(new Vore1255((int) (Math.random() * 800), (int) (Math.random() * 800), (int) (Math.random() * 100)));
 
-        /**
-         * if (scnr.hasNextLine()) { if (counter % 2 == 1) { //String succ =
-         * scnr.nextLine(); window.setColor(Color.black);
-         * //System.out.println(succ);
-         *
-         * window.drawString(succ, 100, ahhstinky); ahhstinky += 25; try {
-         * Thread.sleep(0); } catch (InterruptedException ex) {
-         * Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null,
-         * ex); } } * }*
-         */
-
-        /*  while(scnr.hasNextLine()) {
-        
-            String vro = scnr.nextLine();
-            window.setFont(new Font("Comic Sans MS", 10, 25));
-            window.drawString(vro, 110, 125);
-        }*/
- /* if (counter % 2 == 0) {
-            window.setColor(getBackground());
-            window.fillRect(50, 50, 500, 100);
-            window.setColor(Color.black);
-            window.setFont(new Font("Comic Sans MS", 10, 25));
-            window.drawString("00                    00", 100, 100);
-            window.drawString("  0000000000",110,125);
-            counter--;
-        } else {
-            window.setColor(getBackground());
-            window.fillRect(50, 50, 500, 100);
-            window.setColor(Color.black);
-            window.setFont(new Font("Comic Sans MS", 10, 25));
-            window.drawString("00                    00", 100, 100);
-            counter++;
-        }
-         */
-        try {
-            //window.drawRect(0, 0, 10, 100);
-            //window.drawString("bruh", 2, 100);
-
-            Thread.sleep(0);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            //g.drawImage(god, (int) (Math.random() * 800),  (int) (Math.random() * 800),  (int) (Math.random() * 100),  (int) (Math.random() * 100), null);
+            bruh = false;
         }
 
         drawButton(g);
-        repaint();
+
     }
 
     public void wipeBabies() {
@@ -309,6 +296,7 @@ public final class RPGButOk extends JPanel {
         System.out.println("bad");
         if ((e.x > 1200 && e.x < 1600) && (e.y < 600 && e.y > 400)) {
             pressed = !pressed;
+            bruh = true;
         }
 
     }
@@ -316,6 +304,7 @@ public final class RPGButOk extends JPanel {
     public void released(Point e) {
         if ((e.x > 1200 && e.x < 1600) && (e.y < 600 && e.y > 400)) {
             pressed = !pressed;
+            //bruh = false;
         }
 
     }
@@ -325,29 +314,39 @@ public final class RPGButOk extends JPanel {
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_RIGHT:
+                isRight = true;
                 imageX += 10;
-                repaint();
                 break;
             case KeyEvent.VK_DOWN:
                 imageY += 10;
-                repaint();
                 break;
             case KeyEvent.VK_LEFT:
+                isRight = false;
                 imageX -= 10;
-                repaint();
                 break;
             case KeyEvent.VK_UP:
                 imageY -= 10;
-                repaint();
                 break;
             case KeyEvent.VK_SPACE:
                 sad = !sad;
-                repaint();
-                break;
-            default:
                 break;
         }
 
+    }
+
+    @Override
+    public void run() {
+        for (;/* (;-;) */;) {
+            repaint();
+            // cgiludtsgkuihfgdmudr :)
+            frameShift++;
+            frameShift %= 30;
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }
