@@ -22,8 +22,9 @@ import javax.swing.JPanel;
 public final class RPGButOk extends JPanel implements Runnable {
 
     //BabyOnBoard vro = null;
-    ColumbusGuy[][] finalmap = new ColumbusGuy[20][20];
-    NormalRock[][] rocks = new NormalRock[20][20];
+    ColumbusGuy[][][] finalmap = new ColumbusGuy[5][20][20];
+
+    NormalRock[][][] rocks = new NormalRock[5][20][20];
     ArrayList<BabyOnBoard> babies = new ArrayList<>();
     ArrayList<Vore1255> vores = new ArrayList<>();
     int frameShift;
@@ -31,6 +32,7 @@ public final class RPGButOk extends JPanel implements Runnable {
     int yB = 0;
     int tR = 0;
     int tC = 0;
+    int level = 0;
     int counter = 0;
     int ahhstinky = 125;
     int imageX = 0;
@@ -55,21 +57,31 @@ public final class RPGButOk extends JPanel implements Runnable {
     }
 
     public RPGButOk() throws IOException {
+        level = 0;
+        int stairX = (int) (Math.random() * 20);
+        int stairY = (int) (Math.random() * 20);
         bruh = false;
-        for (int r = 0; r < finalmap.length; r++) {
-            for (int c = 0; c < finalmap[r].length; c++) {
-                tR = r % 5;
-                tC = c % 5;
-                if (Math.random() < 1.0 / 3) {
-                    rocks[r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), tC * 160 + (int) (Math.random() * 130), true);
-                } else {
-                    rocks[r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), tC * 160 + (int) (Math.random() * 130), false);
+        for (int a = 0; a < finalmap.length; a++) {
+            for (int r = 0; r < finalmap[a].length; r++) {
+                for (int c = 0; c < finalmap[a][r].length; c++) {
+                    tR = r % 5;
+                    tC = c % 5;
+                    if (Math.random() < 1.0 / 3) {
+                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), tC * 160 + (int) (Math.random() * 130), true);
+                    } else {
+                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), tC * 160 + (int) (Math.random() * 130), false);
+                    }
+                    if ((r == stairX) && (c == stairY)) {
+
+                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, true);
+
+                    }else{
+                    finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, false);
+                    }
                 }
-                finalmap[r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0);
+
             }
-
         }
-
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -121,15 +133,16 @@ public final class RPGButOk extends JPanel implements Runnable {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         //     if(imageX > 800);
+
         for (int x = 0; x < 5; x++) {
             // System.out.println(finalmap[x].length);
             for (int y = 0; y < 5; y++) {
                 //System.out.println("bruh");
 
-                finalmap[5 * xB + x][5 * yB + y].paint(g);
-                if (rocks[5 * xB + x][5 * yB + y].hmm()) {
+                finalmap[level][5 * xB + x][5 * yB + y].paint(g);
+                if (rocks[level][5 * xB + x][5 * yB + y].hmm()) {
 
-                    rocks[5 * xB + x][5 * yB + y].paint(g);
+                    rocks[level][5 * xB + x][5 * yB + y].paint(g);
                 }
                 for (int vore = 0; vore < vores.size(); vore++) {
 
@@ -209,9 +222,9 @@ public final class RPGButOk extends JPanel implements Runnable {
             for (int r = 0; r < 5; r++) {
                 for (int c = 0; c < 5; c++) {
                     Rectangle2D.Double bruh = new Rectangle2D.Double(babies.get(x).getX(), babies.get(x).getY(), babies.get(x).getSize(), babies.get(x).getSize());
-                    if (rocks[5 * xB + r][5 * yB + c].intersects(bruh)) {
+                    if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh)) {
                         //System.out.println("life is good");
-                        rocks[5 * xB + r][5 * yB + c].LIVE();
+                        rocks[level][5 * xB + r][5 * yB + c].LIVE();
                     }
                 }
 
@@ -236,12 +249,13 @@ public final class RPGButOk extends JPanel implements Runnable {
     public void rockCheck() throws IOException {
 
         Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
 
-                if (rocks[5 * xB + r][5 * yB + c].intersects(bruh)) {
+                if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh)) {
 
-                    rocks[5 * xB + r][5 * yB + c].DIE();
+                    rocks[level][5 * xB + r][5 * yB + c].DIE();
                 }
             }
 
@@ -313,6 +327,16 @@ public final class RPGButOk extends JPanel implements Runnable {
         System.out.println(e.getKeyCode());
 
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                if (level < 4) {
+                    level++;
+                }
+                break;
+            case KeyEvent.VK_S:
+                if (level > 0) {
+                    level--;
+                }
+                break;
             case KeyEvent.VK_RIGHT:
                 isRight = true;
                 imageX += 10;

@@ -8,12 +8,13 @@ import javax.imageio.ImageIO;
 
 public class ColumbusGuy {
 
-    public static Image sector, sectorDos, boi;
+    public static Image sector, sectorDos, exit, boi;
     static {
         try {
            
             boi = ImageIO.read(new File("normalrock.jpg"))
                     .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                exit = ImageIO.read(new File("sexdungeon.png"));
             sectorDos = ImageIO.read(new File("firegrass.png"))
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             sector = ImageIO.read(new File("badgrass.png"))
@@ -23,15 +24,15 @@ public class ColumbusGuy {
         }
     }
     int x, y, rX, rY;
-    boolean cool, rock;
+    boolean cool, eggsit;
 
     
-    public ColumbusGuy(int a, int b, boolean bruh) {
+    public ColumbusGuy(int a, int b, boolean bruh, boolean eggsit) {
         
         x = a;
         y = b;
         cool = bruh;
-       
+        this.eggsit = eggsit;
         //B)
     }
 
@@ -42,11 +43,14 @@ public class ColumbusGuy {
         } else {
             window.drawImage(sectorDos, x, y, null);
         }
-         if(rock) {
-            window.drawImage(boi, x + rX, y + rY,null);
+         if(eggsit) {
+            window.drawImage(exit, x + rX, y + rY,null);
         
         }
 
     }
-
+    public boolean getExit() {
+    
+        return eggsit;
+    }
 }
