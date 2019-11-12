@@ -21,44 +21,47 @@ public class BabyOnBoard {
         }
     }
     private Rectangle2D.Double hitbox;
-    private int posX, posY, size, dy,dx;
+    private int posX, posY, size, dy, dx;
 
     public BabyOnBoard(int x, int y) {
         size = (int) (Math.random() * 50);
         dy = 0;
         dx = 0;
-        
+
         posX = x;
         posY = y;
-        while(dy == 0)
-        dy = (int) (Math.random() * 21 - 10);
-            while(dx == 0)
-        dx = (int) (Math.random() * 21 - 10);
+        int v = 10;
+        double theta = Math.random() * Math.PI / 3 - Math.PI / 6;
+        double tempX = Math.cos(theta) * v, tempY = Math.sin(theta) * v;
+        dx = (int) (tempX > 0 ? Math.ceil(tempX) : Math.floor(tempX));
+        dy = (int) (tempY > 0 ? Math.ceil(tempY) : Math.floor(tempY));
         hitbox = new Rectangle2D.Double(x, y, size, size);
     }
 
     public void moveBaby() {
-       // posY += (int) (Math.random() * 20 - 10);//dy;
-       posY += dy;
-       posX += dx;
-       // posY += (int) (Math.random() * 20 - 10);//dx;
+        // posY += (int) (Math.random() * 20 - 10);//dy;
+        posY += dy;
+        posX += dx;
+        // posY += (int) (Math.random() * 20 - 10);//dx;
     }
 
     public void paint(Graphics window) {
-        
+
         window.drawImage(BABY, posX/* + (25 - size) / 2*/, posY, size, size, null);
     }
 
     public int getY() {
         return posY;
     }
-     /*public boolean intersects(Rectangle2D other) {
+
+    /*public boolean intersects(Rectangle2D other) {
         return hitbox.intersects(other);
     }*/
     public int getSize() {
         return size;
-    
+
     }
+
     public int getX() {
         return posX;
     }

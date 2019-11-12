@@ -47,7 +47,7 @@ public final class RPGButOk extends JPanel implements Runnable {
         try {
             god = ImageIO.read(new File("oh no.png"));
             ammo = ImageIO.read(new File("theAMMUNITION.png"));
-            piece = ImageIO.read(new File("deepfried_1568835288138.png"));
+            piece = ImageIO.read(new File("YES.jpg"));
             pieceTwo = ImageIO.read(new File("chomp.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
@@ -150,7 +150,11 @@ public final class RPGButOk extends JPanel implements Runnable {
         //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         //}
         if (frameShift < 15) {
-            g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+            if (isRight) {
+                g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+            } else {
+                g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+            }
         } else {
             if (isRight) {
                 g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
@@ -293,20 +297,16 @@ public final class RPGButOk extends JPanel implements Runnable {
     }
 
     public void pressed(Point e) {
-        System.out.println("bad");
-        if ((e.x > 1200 && e.x < 1600) && (e.y < 600 && e.y > 400)) {
-            pressed = !pressed;
+        // System.out.println("bad " + e.x + ", " + e.y);
+        if ((e.x > 1200 && e.x < 1400) && (e.y < 450 && e.y > 400)) {
+            pressed = true;
             bruh = true;
         }
 
     }
 
     public void released(Point e) {
-        if ((e.x > 1200 && e.x < 1600) && (e.y < 600 && e.y > 400)) {
-            pressed = !pressed;
-            //bruh = false;
-        }
-
+        pressed = false;
     }
 
     public void keyPressed(KeyEvent e) {
