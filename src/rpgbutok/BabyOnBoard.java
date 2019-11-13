@@ -27,7 +27,7 @@ public class BabyOnBoard {
         size = (int) (Math.random() * 50);
         dy = 0;
         dx = 0;
-
+ 
         posX = x;
         posY = y;
         int v = 10;

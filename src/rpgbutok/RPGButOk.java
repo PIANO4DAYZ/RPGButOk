@@ -39,7 +39,9 @@ public final class RPGButOk extends JPanel implements Runnable {
     int imageY = 0;
     int xLength = 150;
     int yLength = 100;
+    boolean space;
     boolean bruh;
+    boolean q = false;
     boolean pressed = false;
     boolean sad = false, isRight = true;
 
@@ -58,10 +60,11 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     public RPGButOk() throws IOException {
         level = 0;
-        int stairX = (int) (Math.random() * 20);
-        int stairY = (int) (Math.random() * 20);
+        space = false;
         bruh = false;
         for (int a = 0; a < finalmap.length; a++) {
+            int stairX = (int) (Math.random() * 20);
+            int stairY = (int) (Math.random() * 20);
             for (int r = 0; r < finalmap[a].length; r++) {
                 for (int c = 0; c < finalmap[a][r].length; c++) {
                     tR = r % 5;
@@ -75,8 +78,8 @@ public final class RPGButOk extends JPanel implements Runnable {
 
                         finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, true);
 
-                    }else{
-                    finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, false);
+                    } else {
+                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, false);
                     }
                 }
 
@@ -86,6 +89,11 @@ public final class RPGButOk extends JPanel implements Runnable {
             @Override
             public void keyPressed(KeyEvent e) {
                 RPGButOk.this.keyPressed(e);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                RPGButOk.this.keyReleased(e);
             }
         });
         addMouseListener(new MouseAdapter() {
@@ -151,7 +159,9 @@ public final class RPGButOk extends JPanel implements Runnable {
                 // finalmap[x][y].paint(g);
             }
         }
-
+        if (q) {
+            exitCheck();
+        }
         //g.setColor(getBackground());
         //g.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
         // g.fillRect(0, 0, getWidth(), getHeight());
@@ -169,10 +179,16 @@ public final class RPGButOk extends JPanel implements Runnable {
                 g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
             }
         } else {
-            if (isRight) {
+            if (isRight && space) {
                 g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
-            } else {
+            } else if (space) {
                 g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
+            } else if (isRight) {
+                g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+
+            } else {
+                g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+
             }
         }
         for (int z = 0; z < babies.size(); z++) {
@@ -214,6 +230,25 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     public void wipeBabies() {
         babies.clear();
+    }
+
+    public void exitCheck() {
+        Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+
+        for (int r = 0; r < 5; r++) {
+            for (int c = 0; c < 5; c++) {
+                ColumbusGuy temp = finalmap[level][5 * xB + r][5 * yB + c];
+                if (temp.getExit() && temp.intersects(bruh)) {
+                    level++;
+                    imageX = temp.getX() + (160 - xLength)/2;
+                    
+                    imageY = temp.getY() + (160 - yLength)/2;
+                    System.out.println("exit found");
+                }
+            }
+
+        }
+
     }
 
     public void bulletCheck() throws IOException {
@@ -323,8 +358,15 @@ public final class RPGButOk extends JPanel implements Runnable {
         pressed = false;
     }
 
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_Q) {
+            q = false;
+            System.out.println("stinky");
+        }
+    }
+
     public void keyPressed(KeyEvent e) {
-        System.out.println(e.getKeyCode());
+       // System.out.println(e.getKeyCode());
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
@@ -353,6 +395,11 @@ public final class RPGButOk extends JPanel implements Runnable {
                 break;
             case KeyEvent.VK_SPACE:
                 sad = !sad;
+                space = !space;
+                break;
+            case KeyEvent.VK_Q:
+                q = true;
+               
                 break;
         }
 
@@ -365,11 +412,13 @@ public final class RPGButOk extends JPanel implements Runnable {
             // cgiludtsgkuihfgdmudr :)
             frameShift++;
             frameShift %= 30;
+
             try {
                 Thread.sleep(16);
             } catch (InterruptedException ex) {
                 Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
     }
 
