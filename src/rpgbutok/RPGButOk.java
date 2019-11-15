@@ -76,10 +76,10 @@ public final class RPGButOk extends JPanel implements Runnable {
                     }
                     if ((r == stairX) && (c == stairY)) {
 
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, true);
+                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, a, (int) (Math.random() * 2) == 0, true);
 
                     } else {
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, (int) (Math.random() * 2) == 0, false);
+                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, a, (int) (Math.random() * 2) == 0, false);
                     }
                 }
 
@@ -238,15 +238,23 @@ public final class RPGButOk extends JPanel implements Runnable {
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
                 ColumbusGuy temp = finalmap[level][5 * xB + r][5 * yB + c];
+
                 if (temp.getExit() && temp.intersects(bruh)) {
+                    if (level < 4) {
+                        finalmap[level + 1][5 * xB + r][5 * yB + c].setExit();
+
+                        //System.out.println("gucci");
+                    }
+                    if(level < 4){
                     level++;
-                    imageX = temp.getX() + (160 - xLength)/2;
-                    
-                    imageY = temp.getY() + (160 - yLength)/2;
+                    imageX = temp.getX() + (160 - xLength) / 2;
+
+                    imageY = temp.getY() + (160 - yLength) / 2;
                     System.out.println("exit found");
+                    }
+      return;             
                 }
             }
-
         }
 
     }
@@ -361,12 +369,12 @@ public final class RPGButOk extends JPanel implements Runnable {
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_Q) {
             q = false;
-            System.out.println("stinky");
+            // System.out.println("stinky");
         }
     }
 
     public void keyPressed(KeyEvent e) {
-       // System.out.println(e.getKeyCode());
+        // System.out.println(e.getKeyCode());
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
@@ -399,7 +407,7 @@ public final class RPGButOk extends JPanel implements Runnable {
                 break;
             case KeyEvent.VK_Q:
                 q = true;
-               
+
                 break;
         }
 
