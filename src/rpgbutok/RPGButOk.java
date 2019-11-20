@@ -39,12 +39,14 @@ public final class RPGButOk extends JPanel implements Runnable {
     int imageY = 0;
     int xLength = 150;
     int yLength = 100;
+    BattleScreen battle;
+    boolean touchRock;
     boolean space;
     boolean bruh;
     boolean q = false;
     boolean pressed = false;
     boolean sad = false, isRight = true;
-
+    public ArrayList<String> quotes = new ArrayList<>();
     private static BufferedImage ammo, piece, god, pieceTwo;
 
     static {
@@ -59,7 +61,21 @@ public final class RPGButOk extends JPanel implements Runnable {
     }
 
     public RPGButOk() throws IOException {
+        quotes.add("oh no bro");
+        quotes.add("coochie");
+        quotes.add("hoho your mom is gOYYYYYYY");
+        quotes.add("vro not my habanero deviled egos");
+        quotes.add("did you know that 98 percent of\n"
+                + "virgins within the american states\n"
+                + "actually originate frtom the small\n"
+                + "southern country of the middle east,\n"
+                + "when the arabians took over lord gigalent.\n"
+                + "He was a evil and dangerous man, y el\n"
+                + "era muyyyyyyyyyyyyyyyyyyyy disordenado.\n"
+                + "Pero, el es muy guapo, y es un aguacate.");
+            touchRock = false;
         level = 0;
+        battle = new BattleScreen(0, "bad");
         space = false;
         bruh = false;
         for (int a = 0; a < finalmap.length; a++) {
@@ -70,9 +86,11 @@ public final class RPGButOk extends JPanel implements Runnable {
                     tR = r % 5;
                     tC = c % 5;
                     if (Math.random() < 1.0 / 3) {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), tC * 160 + (int) (Math.random() * 130), true);
+                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), 
+                                tC * 160 + (int) (Math.random() * 130), true, quotes.get((int)(Math.random() * quotes.size())));
                     } else {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), tC * 160 + (int) (Math.random() * 130), false);
+                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), 
+                                tC * 160 + (int) (Math.random() * 130), false, quotes.get((int)(Math.random() * quotes.size())));
                     }
                     if ((r == stairX) && (c == stairY)) {
 
@@ -126,7 +144,7 @@ public final class RPGButOk extends JPanel implements Runnable {
 
         checkArea();
         try {
-            rockCheck();
+            rockCheckAndChange();
         } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -158,6 +176,13 @@ public final class RPGButOk extends JPanel implements Runnable {
                 }
                 // finalmap[x][y].paint(g);
             }
+        }
+        try {
+            if(rockCheck()){
+                battle.paint(g);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (q) {
             exitCheck();
@@ -267,7 +292,7 @@ public final class RPGButOk extends JPanel implements Runnable {
                     Rectangle2D.Double bruh = new Rectangle2D.Double(babies.get(x).getX(), babies.get(x).getY(), babies.get(x).getSize(), babies.get(x).getSize());
                     if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh)) {
                         //System.out.println("life is good");
-                        rocks[level][5 * xB + r][5 * yB + c].LIVE();
+                        rocks[level][5 * xB + r][5 * yB + c].live();
                     }
                 }
 
@@ -288,22 +313,38 @@ public final class RPGButOk extends JPanel implements Runnable {
         //if(e.getX() > 1200 && e.getX() < 1400 && )
 
     }
-
-    public void rockCheck() throws IOException {
-
-        Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+    public boolean rockCheck() throws IOException {
+    
+    Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
 
-                if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh)) {
-
-                    rocks[level][5 * xB + r][5 * yB + c].DIE();
+                if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
+                      battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote());
+                    //System.out.println(rocks[level][5 * xB + r][5 * yB + c].getX() + "," + rocks[level][5 * xB + r][5 * yB + c].getY());
+                    return true;
                 }
             }
 
         }
+        return false;
+    }
+    public void rockCheckAndChange() throws IOException {
 
+        Rectangle2D.Double vro = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+
+        for (int r = 0; r < 5; r++) {
+            for (int c = 0; c < 5; c++) {
+
+                if (rocks[level][5 * xB + r][5 * yB + c].intersects(vro) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
+                 
+                    rocks[level][5 * xB + r][5 * yB + c].die();
+                }
+            }
+
+        }
+     
     }
 
     public void checkArea() {

@@ -1,7 +1,5 @@
 package rpgbutok;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import java.io.FileNotFoundException;
 import java.io.IOException;
