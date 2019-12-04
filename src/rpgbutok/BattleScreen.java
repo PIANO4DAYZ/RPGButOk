@@ -2,6 +2,7 @@ package rpgbutok;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,15 +10,15 @@ import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 
 public class BattleScreen {
-
+    
     private int type;
     private String text;
-
+    
     public BattleScreen(int x, String quote) {
         text = quote;
         type = x;
     }
-
+    
     public void paint(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -27,7 +28,7 @@ public class BattleScreen {
         if (type == 0) {
             g2D.setStroke(new BasicStroke(5, BasicStroke.CAP_BUTT,
                     BasicStroke.JOIN_ROUND));
-
+            
             for (int i = 0; i < 5; i++) {
                 Path2D path = new Path2D.Double();
                 path.moveTo(Math.random() * 800, Math.random() * 800);
@@ -40,6 +41,8 @@ public class BattleScreen {
             }
             g2D.setColor(Color.white);
             g2D.drawRect(200, 300, 200, 50);
+            g2D.drawRect(10, 500, 780, 100);
+            g2D.drawString("hola", 500, 300);
             
             FontMetrics metrics = g2D.getFontMetrics();
             String[] temp = text.split("\n");
@@ -47,8 +50,11 @@ public class BattleScreen {
             for (String s : temp) {
                 g2D.drawString(s, 300 - metrics.stringWidth(s) / 2, y);
                 y += metrics.getHeight() + 5;
+                
             }
-            
+            g2D.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+            g2D.drawString("Battle Options", 110, 560);
+            g2D.drawString("Items", 500, 560);
             // g2D.drawString(text, 300 - width / 2, 325);
         }
     }

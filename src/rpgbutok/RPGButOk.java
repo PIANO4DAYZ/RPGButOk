@@ -32,6 +32,7 @@ public final class RPGButOk extends JPanel implements Runnable {
     int yB = 0;
     int tR = 0;
     int tC = 0;
+    int battleSelector;
     int level = 0;
     int counter = 0;
     int ahhstinky = 125;
@@ -40,6 +41,7 @@ public final class RPGButOk extends JPanel implements Runnable {
     int xLength = 150;
     int yLength = 100;
     BattleScreen battle;
+    boolean isBattle;
     boolean touchRock;
     boolean space;
     boolean bruh;
@@ -75,9 +77,11 @@ public final class RPGButOk extends JPanel implements Runnable {
                 + "Pero, el es muy guapo, y es un aguacate.");
             touchRock = false;
         level = 0;
+        battleSelector = 0;
         battle = new BattleScreen(0, "bad");
         space = false;
         bruh = false;
+        isBattle = true;
         for (int a = 0; a < finalmap.length; a++) {
             int stairX = (int) (Math.random() * 20);
             int stairY = (int) (Math.random() * 20);
@@ -180,6 +184,11 @@ public final class RPGButOk extends JPanel implements Runnable {
         try {
             if(rockCheck()){
                 battle.paint(g);
+                if(battleSelector ==0) {
+                
+                
+                }
+                isBattle = false;
             }
         } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
@@ -197,6 +206,7 @@ public final class RPGButOk extends JPanel implements Runnable {
         //} catch (IOException ex) {
         //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         //}
+        if(isBattle){
         if (frameShift < 15) {
             if (isRight) {
                 g.drawImage(piece, imageX, imageY, xLength, yLength, null);
@@ -215,6 +225,7 @@ public final class RPGButOk extends JPanel implements Runnable {
                 g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
 
             }
+        }
         }
         for (int z = 0; z < babies.size(); z++) {
             BabyOnBoard baby = babies.get(z);
@@ -416,7 +427,7 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     public void keyPressed(KeyEvent e) {
         // System.out.println(e.getKeyCode());
-
+if(isBattle){
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 if (level < 4) {
@@ -451,7 +462,16 @@ public final class RPGButOk extends JPanel implements Runnable {
 
                 break;
         }
+}else {
+    if(e.getKeyCode() == KeyEvent.VK_RIGHT && battleSelector < 1) {
+    
+    battleSelector++;
+    }else if(e.getKeyCode() == KeyEvent.VK_LEFT && battleSelector > 0)  {
+    
+    battleSelector--;
+    }
 
+}
     }
 
     @Override
