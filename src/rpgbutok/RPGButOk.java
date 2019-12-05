@@ -33,6 +33,7 @@ public final class RPGButOk extends JPanel implements Runnable {
     int tR = 0;
     int tC = 0;
     int battleSelector;
+    int battleLayer;
     int level = 0;
     int counter = 0;
     int ahhstinky = 125;
@@ -75,13 +76,14 @@ public final class RPGButOk extends JPanel implements Runnable {
                 + "He was a evil and dangerous man, y el\n"
                 + "era muyyyyyyyyyyyyyyyyyyyy disordenado.\n"
                 + "Pero, el es muy guapo, y es un aguacate.");
-            touchRock = false;
+        touchRock = false;
         level = 0;
         battleSelector = 0;
-        battle = new BattleScreen(0, "bad");
+        battleLayer = 0;
+        battle = new BattleScreen(0, "bad", 0, 0);
         space = false;
         bruh = false;
-        isBattle = true;
+        isBattle = false;
         for (int a = 0; a < finalmap.length; a++) {
             int stairX = (int) (Math.random() * 20);
             int stairY = (int) (Math.random() * 20);
@@ -90,11 +92,11 @@ public final class RPGButOk extends JPanel implements Runnable {
                     tR = r % 5;
                     tC = c % 5;
                     if (Math.random() < 1.0 / 3) {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), 
-                                tC * 160 + (int) (Math.random() * 130), true, quotes.get((int)(Math.random() * quotes.size())));
+                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130),
+                                tC * 160 + (int) (Math.random() * 130), true, quotes.get((int) (Math.random() * quotes.size())));
                     } else {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130), 
-                                tC * 160 + (int) (Math.random() * 130), false, quotes.get((int)(Math.random() * quotes.size())));
+                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130),
+                                tC * 160 + (int) (Math.random() * 130), false, quotes.get((int) (Math.random() * quotes.size())));
                     }
                     if ((r == stairX) && (c == stairY)) {
 
@@ -182,13 +184,20 @@ public final class RPGButOk extends JPanel implements Runnable {
             }
         }
         try {
-            if(rockCheck()){
+            
+            if (rockCheck()) {
                 battle.paint(g);
-                if(battleSelector ==0) {
-                
-                
+                if (battleSelector == 0 && battleLayer == 0) {
+
+                    g.drawOval(65, 540, 25, 25);
+                } else if (battleSelector == 1 && battleLayer == 0) {
+
+                    g.drawOval(455, 540, 25, 25);
+                } else if (battleLayer >= 1) {
+                    battle.updateLevel();
+                    System.out.println("cool");
                 }
-                isBattle = false;
+                isBattle = true;
             }
         } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
@@ -206,26 +215,26 @@ public final class RPGButOk extends JPanel implements Runnable {
         //} catch (IOException ex) {
         //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         //}
-        if(isBattle){
-        if (frameShift < 15) {
-            if (isRight) {
-                g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+        if (isBattle == false) {
+            if (frameShift < 15) {
+                if (isRight) {
+                    g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+                } else {
+                    g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+                }
             } else {
-                g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
-            }
-        } else {
-            if (isRight && space) {
-                g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
-            } else if (space) {
-                g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
-            } else if (isRight) {
-                g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+                if (isRight && space) {
+                    g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
+                } else if (space) {
+                    g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
+                } else if (isRight) {
+                    g.drawImage(piece, imageX, imageY, xLength, yLength, null);
 
-            } else {
-                g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+                } else {
+                    g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
 
+                }
             }
-        }
         }
         for (int z = 0; z < babies.size(); z++) {
             BabyOnBoard baby = babies.get(z);
@@ -281,14 +290,14 @@ public final class RPGButOk extends JPanel implements Runnable {
 
                         //System.out.println("gucci");
                     }
-                    if(level < 4){
-                    level++;
-                    imageX = temp.getX() + (160 - xLength) / 2;
+                    if (level < 4) {
+                        level++;
+                        imageX = temp.getX() + (160 - xLength) / 2;
 
-                    imageY = temp.getY() + (160 - yLength) / 2;
-                    System.out.println("exit found");
+                        imageY = temp.getY() + (160 - yLength) / 2;
+                        System.out.println("exit found");
                     }
-      return;             
+                    return;
                 }
             }
         }
@@ -324,15 +333,16 @@ public final class RPGButOk extends JPanel implements Runnable {
         //if(e.getX() > 1200 && e.getX() < 1400 && )
 
     }
+
     public boolean rockCheck() throws IOException {
-    
-    Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+
+        Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
 
                 if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
-                      battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote());
+                    battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote(), battleLayer, battleSelector);
                     //System.out.println(rocks[level][5 * xB + r][5 * yB + c].getX() + "," + rocks[level][5 * xB + r][5 * yB + c].getY());
                     return true;
                 }
@@ -341,6 +351,7 @@ public final class RPGButOk extends JPanel implements Runnable {
         }
         return false;
     }
+
     public void rockCheckAndChange() throws IOException {
 
         Rectangle2D.Double vro = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
@@ -349,13 +360,13 @@ public final class RPGButOk extends JPanel implements Runnable {
             for (int c = 0; c < 5; c++) {
 
                 if (rocks[level][5 * xB + r][5 * yB + c].intersects(vro) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
-                 
+
                     rocks[level][5 * xB + r][5 * yB + c].die();
                 }
             }
 
         }
-     
+
     }
 
     public void checkArea() {
@@ -427,51 +438,55 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     public void keyPressed(KeyEvent e) {
         // System.out.println(e.getKeyCode());
-if(isBattle){
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                if (level < 4) {
-                    level++;
-                }
-                break;
-            case KeyEvent.VK_S:
-                if (level > 0) {
-                    level--;
-                }
-                break;
-            case KeyEvent.VK_RIGHT:
-                isRight = true;
-                imageX += 10;
-                break;
-            case KeyEvent.VK_DOWN:
-                imageY += 10;
-                break;
-            case KeyEvent.VK_LEFT:
-                isRight = false;
-                imageX -= 10;
-                break;
-            case KeyEvent.VK_UP:
-                imageY -= 10;
-                break;
-            case KeyEvent.VK_SPACE:
-                sad = !sad;
-                space = !space;
-                break;
-            case KeyEvent.VK_Q:
-                q = true;
+        if (isBattle == false) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    if (level < 4) {
+                        level++;
+                    }
+                    break;
+                case KeyEvent.VK_S:
+                    if (level > 0) {
+                        level--;
+                    }
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    isRight = true;
+                    imageX += 10;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    imageY += 10;
+                    break;
+                case KeyEvent.VK_LEFT:
+                    isRight = false;
+                    imageX -= 10;
+                    break;
+                case KeyEvent.VK_UP:
+                    imageY -= 10;
+                    break;
+                case KeyEvent.VK_SPACE:
+                    sad = !sad;
+                    space = !space;
+                    break;
+                case KeyEvent.VK_Q:
+                    q = true;
 
-                break;
+                    break;
+            }
+        } else {
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT && battleSelector < 1) {
+
+                battleSelector++;
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && battleSelector > 0) {
+
+                battleSelector--;
+            } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector < 1) {
+                battleLayer++;
+            } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector > 0) {
+                battleLayer++;
+            }
+
         }
-}else {
-    if(e.getKeyCode() == KeyEvent.VK_RIGHT && battleSelector < 1) {
-    
-    battleSelector++;
-    }else if(e.getKeyCode() == KeyEvent.VK_LEFT && battleSelector > 0)  {
-    
-    battleSelector--;
-    }
-
-}
     }
 
     @Override
