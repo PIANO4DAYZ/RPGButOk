@@ -33,6 +33,7 @@ public final class RPGButOk extends JPanel implements Runnable {
     int tR = 0;
     int tC = 0;
     int battleSelector;
+    int choice;
     int battleLayer;
     int level = 0;
     int counter = 0;
@@ -80,7 +81,8 @@ public final class RPGButOk extends JPanel implements Runnable {
         level = 0;
         battleSelector = 0;
         battleLayer = 0;
-        battle = new BattleScreen(0, "bad", 0, 0);
+        choice = -1;
+        battle = new BattleScreen(0, "bad", 0, 0, -1);
         space = false;
         bruh = false;
         isBattle = false;
@@ -187,15 +189,22 @@ public final class RPGButOk extends JPanel implements Runnable {
             
             if (rockCheck()) {
                 battle.paint(g);
-                if (battleSelector == 0 && battleLayer == 0) {
+                if (battleSelector == 0) {
 
                     g.drawOval(65, 540, 25, 25);
-                } else if (battleSelector == 1 && battleLayer == 0) {
+                } else if (battleSelector == 1) {
 
                     g.drawOval(455, 540, 25, 25);
                 } else if (battleLayer >= 1) {
                     battle.updateLevel();
                     System.out.println("cool");
+                }else if(battleSelector == 0 && battleLayer == 1) {
+                
+                
+                    g.drawOval(65, 540, 25, 25);
+                }else if(battleSelector == 1 && battleLayer == 1) {
+                
+                 g.drawOval(455, 540, 25, 25);
                 }
                 isBattle = true;
             }
@@ -342,7 +351,7 @@ public final class RPGButOk extends JPanel implements Runnable {
             for (int c = 0; c < 5; c++) {
 
                 if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
-                    battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote(), battleLayer, battleSelector);
+                    battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote(), battleLayer, battleSelector, choice);
                     //System.out.println(rocks[level][5 * xB + r][5 * yB + c].getX() + "," + rocks[level][5 * xB + r][5 * yB + c].getY());
                     return true;
                 }
@@ -482,8 +491,10 @@ public final class RPGButOk extends JPanel implements Runnable {
                 battleSelector--;
             } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector < 1) {
                 battleLayer++;
+                choice = 0;
             } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector > 0) {
                 battleLayer++;
+                choice = 1;
             }
 
         }

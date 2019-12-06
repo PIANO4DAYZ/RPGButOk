@@ -15,10 +15,12 @@ public class BattleScreen {
     private String text;
     private int layer;
     private int option;
-    public BattleScreen(int x, String quote, int level, int o) {
+    private int choice;
+    public BattleScreen(int x, String quote, int level, int o, int c) {
         text = quote;
         type = x;
         layer = level;
+        choice = c;
         option = o;
     }
 
@@ -60,11 +62,14 @@ public class BattleScreen {
             if (layer == 0) {
                 g2D.drawString("Battle Options", 110, 560);
                 g2D.drawString("Items", 500, 560);
-            } else if(layer == 1 && option == 0) {
+            } else if(layer == 1 && choice == 0) {
+                g2D.drawString("Hit it i guess", 110, 560);
+                g2D.drawString("SPECIAL MOVE", 500, 560);
                 //g2D.drawString("hmm", 110, 560);
                 //g2D.drawString("thonk", 500, 560);
-            }else if(layer == 1 && option == 1){
-            
+            }else if(layer == 1 && choice == 1){
+                g2D.drawString("mmm healing pot", 110, 560);
+                g2D.drawString("uhh food", 500, 560);
             }
             // g2D.drawString(text, 300 - width / 2, 325);
         }
