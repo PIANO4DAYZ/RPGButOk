@@ -2,6 +2,7 @@ package rpgbutok;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,10 +13,15 @@ public class BattleScreen {
 
     private int type;
     private String text;
-
-    public BattleScreen(int x, String quote) {
+    private int layer;
+    private int option;
+    private int choice;
+    public BattleScreen(int x, String quote, int level, int o, int c) {
         text = quote;
         type = x;
+        layer = level;
+        choice = c;
+        option = o;
     }
 
     public void paint(Graphics g) {
@@ -40,16 +46,38 @@ public class BattleScreen {
             }
             g2D.setColor(Color.white);
             g2D.drawRect(200, 300, 200, 50);
-            
+            g2D.drawRect(10, 500, 780, 100);
+            g2D.drawString("hola", 500, 300);
+
             FontMetrics metrics = g2D.getFontMetrics();
             String[] temp = text.split("\n");
             int y = 325;
             for (String s : temp) {
                 g2D.drawString(s, 300 - metrics.stringWidth(s) / 2, y);
                 y += metrics.getHeight() + 5;
+
             }
-            
+            g2D.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+            System.out.println("layer: " + layer);
+            if (layer == 0) {
+                g2D.drawString("Battle Options", 110, 560);
+                g2D.drawString("Items", 500, 560);
+            } else if(layer == 1 && choice == 0) {
+                g2D.drawString("Hit it i guess", 110, 560);
+                g2D.drawString("SPECIAL MOVE", 500, 560);
+                //g2D.drawString("hmm", 110, 560);
+                //g2D.drawString("thonk", 500, 560);
+            }else if(layer == 1 && choice == 1){
+                g2D.drawString("mmm healing pot", 110, 560);
+                g2D.drawString("uhh food", 500, 560);
+            }
             // g2D.drawString(text, 300 - width / 2, 325);
         }
+
+    }
+
+    public void updateLevel() {
+        System.out.println("awesome");
+        layer++;
     }
 }
