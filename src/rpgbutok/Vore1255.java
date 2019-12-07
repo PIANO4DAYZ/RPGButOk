@@ -7,8 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Vore1255 {
-
-    int x, y, z, h;
+    private int x, y, z, h;
     private static final BufferedImage bruh;
 
     static {
@@ -27,7 +26,6 @@ public class Vore1255 {
         x = a;
         y = b;
         z = c;
-
     }
 
     public void paint(Graphics g) {

@@ -35,7 +35,7 @@ public class BattleScreen {
                     path.curveTo(Math.random() * 800, Math.random() * 800, Math.random() * 800, Math.random() * 800, Math.random() * 800, Math.random() * 800);
                 }
                 // path.closePath();
-                g2D.setColor(new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
+                g2D.setColor(new Color((int) (Math.random() * 0xFFFFFF)));
                 g2D.draw(path);
             }
             g2D.setColor(Color.white);
