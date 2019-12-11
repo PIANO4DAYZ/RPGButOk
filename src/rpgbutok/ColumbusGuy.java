@@ -16,7 +16,6 @@ public class ColumbusGuy {
 
     static {
         try {
-
             boi = ImageIO.read(new File("normalrock.jpg"))
                     .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
             exit = ImageIO.read(new File("entrancodebancho.png"))
@@ -47,8 +46,9 @@ public class ColumbusGuy {
             System.out.println("WHYYYYYYYYYYYYYYYYYYYYYYY");
         }
     }
-    int x, y, rX, rY, level;
-    boolean cool, eggsit, changed;
+    
+    private int x, y, rX, rY, level;
+    private boolean cool, eggsit, changed;
 
     public ColumbusGuy(int a, int b, int i, boolean bruh, boolean eggsit) {
         if (eggsit) {
@@ -103,7 +103,6 @@ public class ColumbusGuy {
                 case 4:
                     window.drawImage(sectorBraile5, x, y, null);
                     break;
-
                 default:
                     window.drawString("BRUH", x, y);
                     break;
@@ -111,10 +110,8 @@ public class ColumbusGuy {
         }
         if (eggsit) {
             window.drawImage(exit, x + rX, y + rY, null);
-
         }
         if (changed) {
-
             window.drawImage(exit2, x + rX, y + rY, null);
         }
     }
@@ -126,11 +123,9 @@ public class ColumbusGuy {
 
     public int getX() {
         return x;
-
     }
 
     public int getY() {
-
         return y;
     }
 
@@ -139,7 +134,6 @@ public class ColumbusGuy {
     }
 
     public boolean getExit() {
-
         return eggsit;
     }
 }
