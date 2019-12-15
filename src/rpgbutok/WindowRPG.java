@@ -1,7 +1,6 @@
 package rpgbutok;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  * The main class
