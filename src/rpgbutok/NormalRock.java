@@ -1,12 +1,7 @@
 package rpgbutok;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A totally normal rock.
@@ -46,24 +41,10 @@ public class NormalRock {
     private String quote;
 
     static {
-        Image temp = null;
-        try {
-            temp = ImageIO.read(new File("src/resources/normalrock.jpg"))
-                    .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        } catch (IOException ex) {
-            Logger.getLogger(NormalRock.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            ROCK = temp;
-        }
-        try {
-            temp = ImageIO.read(new File("src/resources/deadrock.png"))
-                    .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        } catch (IOException ex) {
-            Logger.getLogger(NormalRock.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DEAD = temp;
-        }
-
+        ROCK = Utilities.getImageSafe("/resources/normalrock.jpg")
+                .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        DEAD = Utilities.getImageSafe("/resources/deadrock.png")
+                .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.Random;
 public class BabyOnBoard {
 
     private static final BufferedImage BABY = 
-            Utilities.getImageSafe("/resouces/theTransAMMUNITION.png");
+            Utilities.getImageSafe("/resources/theTransAMMUNITION.png");
     private static final HashMap<Integer, Image> BABY_CACHE = new HashMap<>();
     private static final Random RAND = new Random();
 

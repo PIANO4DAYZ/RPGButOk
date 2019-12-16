@@ -1,38 +1,30 @@
 package rpgbutok;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
 
 public class ColumbusGuy {
 
     private Rectangle2D.Double hitbox;
-    public static Image sectorLevels[], sectorBrailes[], exit, boi, exit2;
+    public static final Image sectorLevels[], sectorBrailes[], exit, boi, exit2;
 
     static {
-        boi = Utilities.getImageSafe("resources/normalrock.jpg")
+        boi = Utilities.getImageSafe("/resources/normalrock.jpg")
                 .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        try {
-            exit = ImageIO.read(new File("src/resources/entrancodebancho.png"))
+        exit = Utilities.getImageSafe("/resources/entrancodebancho.png")
+                .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        exit2 = Utilities.getImageSafe("/resources/exitodepremesito.png")
+                .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        sectorBrailes = new Image[5];
+        for (int i = 0; i < 5; i++) {
+            sectorBrailes[i] = Utilities.getImageSafe("/resources/firegrass" + (i + 1) + ".png")
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            exit2 = ImageIO.read(new File("src/resources/exitodepremesito.png"))
+        }
+        // System.out.println(Arrays.toString(sectorBrailes));
+        sectorLevels = new Image[5];
+        for (int i = 0; i < 5; i++) {
+            sectorLevels[i] = Utilities.getImageSafe("/resources/badgrass" + (i + 1) + ".png")
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorBrailes = new Image[5];
-            for (int i = 0; i < 5; i++) {
-                sectorBrailes[i] = ImageIO.read(new File("src/resources/firegrass" + (i + 1) + ".png"))
-                        .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            }
-            // System.out.println(Arrays.toString(sectorBrailes));
-            sectorLevels = new Image[5];
-            for (int i = 0; i < 5; i++) {
-                sectorLevels[i] = ImageIO.read(new File("src/resources/badgrass" + (i + 1) + ".png"))
-                        .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            }
-            // System.out.println(Arrays.toString(sectorLevels));
-        } catch (IOException ioe) {
-            System.out.println("WHYYYYYYYYYYYYYYYYYYYYYYY");
         }
     }
 
