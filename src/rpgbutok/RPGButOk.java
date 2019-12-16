@@ -37,10 +37,10 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     static {
         try {
-            piece = ImageIO.read(new File("YES.jpg"));
-            pieceTwo = ImageIO.read(new File("chomp.jpg"));
+            piece = ImageIO.read(new File("src/resources/YES.jpg"));
+            pieceTwo = ImageIO.read(new File("src/resources/chomp.jpg"));
         } catch (IOException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -65,13 +65,8 @@ public final class RPGButOk extends JPanel implements Runnable {
                         rocks[a][r][c] = new NormalRock(tR * 160 + rand.nextInt(130),
                                 tC * 160 + rand.nextInt(130));
                     }
-                    if ((r == stairX) && (c == stairY)) {
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160,
-                                a, rand.nextBoolean(), true);
-                    } else {
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160,
-                                a, rand.nextBoolean(), false);
-                    }
+                    finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160,
+                            a, rand.nextBoolean(), (r == stairX) && (c == stairY));
                 }
 
             }
@@ -420,14 +415,13 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        for (;/* (;-;) */ ; ) {
+        for (;/* (;-;) */;) {
             repaint();
             // cgiludtsgkuihfgdmudr :)
             counter30++;
             counter30 %= 30;
 
             // System.out.println(getWidth() + ", " + getHeight());
-
             try {
                 Thread.sleep(16);
             } catch (InterruptedException ex) {

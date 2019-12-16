@@ -48,7 +48,7 @@ public class NormalRock {
     static {
         Image temp = null;
         try {
-            temp = ImageIO.read(new File("normalrock.jpg"))
+            temp = ImageIO.read(new File("src/resources/normalrock.jpg"))
                     .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         } catch (IOException ex) {
             Logger.getLogger(NormalRock.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,7 +56,7 @@ public class NormalRock {
             ROCK = temp;
         }
         try {
-            temp = ImageIO.read(new File("deadrock.png"))
+            temp = ImageIO.read(new File("src/resources/deadrock.png"))
                     .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         } catch (IOException ex) {
             Logger.getLogger(NormalRock.class.getName()).log(Level.SEVERE, null, ex);

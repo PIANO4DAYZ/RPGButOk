@@ -12,22 +12,22 @@ public class ColumbusGuy {
     public static Image sectorLevels[], sectorBrailes[], exit, boi, exit2;
 
     static {
+        boi = Utilities.getImageSafe("resources/normalrock.jpg")
+                .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         try {
-            boi = ImageIO.read(new File("normalrock.jpg"))
-                    .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-            exit = ImageIO.read(new File("entrancodebancho.png"))
+            exit = ImageIO.read(new File("src/resources/entrancodebancho.png"))
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            exit2 = ImageIO.read(new File("exitodepremesito.png"))
+            exit2 = ImageIO.read(new File("src/resources/exitodepremesito.png"))
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             sectorBrailes = new Image[5];
             for (int i = 0; i < 5; i++) {
-                sectorBrailes[i] = ImageIO.read(new File("firegrass" + (i + 1) + ".png"))
+                sectorBrailes[i] = ImageIO.read(new File("src/resources/firegrass" + (i + 1) + ".png"))
                         .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             }
             // System.out.println(Arrays.toString(sectorBrailes));
             sectorLevels = new Image[5];
             for (int i = 0; i < 5; i++) {
-                sectorLevels[i] = ImageIO.read(new File("badgrass" + (i + 1) + ".png"))
+                sectorLevels[i] = ImageIO.read(new File("src/resources/badgrass" + (i + 1) + ".png"))
                         .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             }
             // System.out.println(Arrays.toString(sectorLevels));
