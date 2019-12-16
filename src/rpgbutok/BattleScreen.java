@@ -1,27 +1,25 @@
 package rpgbutok;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Path2D;
+import java.util.Random;
 
 public class BattleScreen {
-
     private int type;
     private String text;
     private int layer;
     private int option;
     private int choice;
+    private Random r;
+
     public BattleScreen(int x, String quote, int level, int o, int c) {
         text = quote;
         type = x;
         layer = level;
         choice = c;
         option = o;
+        
+        r = new Random();
     }
 
     public void paint(Graphics g) {
@@ -36,12 +34,12 @@ public class BattleScreen {
 
             for (int i = 0; i < 5; i++) {
                 Path2D path = new Path2D.Double();
-                path.moveTo(Math.random() * 800, Math.random() * 800);
+                path.moveTo(r.nextInt(800), r.nextInt(800));
                 for (int j = 0; j < 3; j++) {
-                    path.curveTo(Math.random() * 800, Math.random() * 800, Math.random() * 800, Math.random() * 800, Math.random() * 800, Math.random() * 800);
+                    path.curveTo(r.nextInt(800), r.nextInt(800), r.nextInt(800), r.nextInt(800), r.nextInt(800), r.nextInt(800));
                 }
                 // path.closePath();
-                g2D.setColor(new Color((int) (Math.random() * 0xFFFFFF)));
+                g2D.setColor(new Color(r.nextInt(0xFFFFFF)));
                 g2D.draw(path);
             }
             g2D.setColor(Color.white);
@@ -59,17 +57,25 @@ public class BattleScreen {
             }
             g2D.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
             System.out.println("layer: " + layer);
-            if (layer == 0) {
-                g2D.drawString("Battle Options", 110, 560);
-                g2D.drawString("Items", 500, 560);
-            } else if(layer == 1 && choice == 0) {
-                g2D.drawString("Hit it i guess", 110, 560);
-                g2D.drawString("SPECIAL MOVE", 500, 560);
-                //g2D.drawString("hmm", 110, 560);
-                //g2D.drawString("thonk", 500, 560);
-            }else if(layer == 1 && choice == 1){
-                g2D.drawString("mmm healing pot", 110, 560);
-                g2D.drawString("uhh food", 500, 560);
+            switch(layer) {
+                case 0:
+                    g2D.drawString("Battle Options", 110, 560);
+                    g2D.drawString("Items", 500, 560);
+                    break;
+                case 1:
+                    switch (choice) {
+                        case 0:
+                            // g2D.drawString("hmm", 110, 560);
+                            // g2D.drawString("thonk", 500, 560);
+                            g2D.drawString("Hit it i guess", 110, 560);
+                            g2D.drawString("SPECIAL MOVE", 500, 560);
+                            break;
+                        case 1:
+                            g2D.drawString("mmm healing pot", 110, 560);
+                            g2D.drawString("uhh food", 500, 560);
+                            break;
+                    }
+                    break;
             }
             // g2D.drawString(text, 300 - width / 2, 325);
         }

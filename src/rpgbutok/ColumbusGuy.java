@@ -1,18 +1,15 @@
 package rpgbutok;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class ColumbusGuy {
 
     private Rectangle2D.Double hitbox;
-    public static Image sectorLevel, sectorLevel2, sectorLevel3, sectorLevel4,
-            sectorLevel5, sectorBraile, sectorBraile2, sectorBraile3,
-            sectorBraile4, sectorBraile5, exit, boi, exit2;
+    public static Image sectorLevels[], sectorBrailes[], exit, boi, exit2;
 
     static {
         try {
@@ -22,31 +19,23 @@ public class ColumbusGuy {
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
             exit2 = ImageIO.read(new File("exitodepremesito.png"))
                     .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorBraile = ImageIO.read(new File("firegrass.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorBraile2 = ImageIO.read(new File("firegrass2.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorBraile3 = ImageIO.read(new File("firegrass3.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorBraile4 = ImageIO.read(new File("firegrass4.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorBraile5 = ImageIO.read(new File("firegrass5.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorLevel = ImageIO.read(new File("badgrass.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorLevel2 = ImageIO.read(new File("badgrass2.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorLevel3 = ImageIO.read(new File("badgrass3.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorLevel4 = ImageIO.read(new File("badgrass4.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
-            sectorLevel5 = ImageIO.read(new File("badgrass5.png"))
-                    .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+            sectorBrailes = new Image[5];
+            for (int i = 0; i < 5; i++) {
+                sectorBrailes[i] = ImageIO.read(new File("firegrass" + (i + 1) + ".png"))
+                        .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+            }
+            // System.out.println(Arrays.toString(sectorBrailes));
+            sectorLevels = new Image[5];
+            for (int i = 0; i < 5; i++) {
+                sectorLevels[i] = ImageIO.read(new File("badgrass" + (i + 1) + ".png"))
+                        .getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+            }
+            // System.out.println(Arrays.toString(sectorLevels));
         } catch (IOException ioe) {
             System.out.println("WHYYYYYYYYYYYYYYYYYYYYYYY");
         }
     }
-    
+
     private int x, y, rX, rY, level;
     private boolean cool, eggsit, changed;
 
@@ -66,47 +55,9 @@ public class ColumbusGuy {
     public void paint(Graphics window) {
         //welcome to the paint method :)
         if (cool) {
-            switch (level) {
-                case 0:
-                    window.drawImage(sectorLevel, x, y, null);
-                    break;
-                case 1:
-                    window.drawImage(sectorLevel2, x, y, null);
-                    break;
-                case 2:
-                    window.drawImage(sectorLevel3, x, y, null);
-                    break;
-                case 3:
-                    window.drawImage(sectorLevel4, x, y, null);
-                    break;
-                case 4:
-                    window.drawImage(sectorLevel5, x, y, null);
-                    break;
-                default:
-                    window.drawString("BRUH", x, y);
-                    break;
-            }
+            window.drawImage(sectorLevels[level], x, y, null);
         } else {
-            switch (level) {
-                case 0:
-                    window.drawImage(sectorBraile, x, y, null);
-                    break;
-                case 1:
-                    window.drawImage(sectorBraile2, x, y, null);
-                    break;
-                case 2:
-                    window.drawImage(sectorBraile3, x, y, null);
-                    break;
-                case 3:
-                    window.drawImage(sectorBraile4, x, y, null);
-                    break;
-                case 4:
-                    window.drawImage(sectorBraile5, x, y, null);
-                    break;
-                default:
-                    window.drawString("BRUH", x, y);
-                    break;
-            }
+            window.drawImage(sectorBrailes[level], x, y, null);
         }
         if (eggsit) {
             window.drawImage(exit, x + rX, y + rY, null);
@@ -118,7 +69,6 @@ public class ColumbusGuy {
 
     public void setExit() {
         changed = true;
-
     }
 
     public int getX() {

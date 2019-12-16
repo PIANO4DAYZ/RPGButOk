@@ -1,8 +1,8 @@
 package rpgbutok;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -12,10 +12,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 public final class RPGButOk extends JPanel implements Runnable {
 
@@ -30,9 +29,11 @@ public final class RPGButOk extends JPanel implements Runnable {
             choice;
     private final int xLength = 150, yLength = 100;
     private BattleScreen battle;
-    private boolean touchRock, space, bruh, q = false, pressed = false, 
+    private boolean touchRock, space, bruh, q = false, pressed = false,
             sad = false, isRight = true, isBattle;
     private static BufferedImage piece, pieceTwo;
+
+    private Random rand = new Random();
 
     static {
         try {
@@ -54,25 +55,22 @@ public final class RPGButOk extends JPanel implements Runnable {
         bruh = false;
         isBattle = false;
         for (int a = 0; a < finalmap.length; a++) {
-            int stairX = (int) (Math.random() * 20);
-            int stairY = (int) (Math.random() * 20);
+            int stairX = rand.nextInt(20);
+            int stairY = rand.nextInt(20);
             for (int r = 0; r < finalmap[a].length; r++) {
                 for (int c = 0; c < finalmap[a][r].length; c++) {
                     int tR = r % 5;
                     int tC = c % 5;
-                    if (Math.random() < 1.0 / 3) {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130),
-                                tC * 160 + (int) (Math.random() * 130), true);
-                    } else {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130),
-                                tC * 160 + (int) (Math.random() * 130), false);
+                    if (rand.nextInt(3) == 0) {
+                        rocks[a][r][c] = new NormalRock(tR * 160 + rand.nextInt(130),
+                                tC * 160 + rand.nextInt(130));
                     }
                     if ((r == stairX) && (c == stairY)) {
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, 
-                                a, (int) (Math.random() * 2) == 0, true);
+                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160,
+                                a, rand.nextBoolean(), true);
                     } else {
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, 
-                                a, (int) (Math.random() * 2) == 0, false);
+                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160,
+                                a, rand.nextBoolean(), false);
                     }
                 }
 
@@ -113,13 +111,13 @@ public final class RPGButOk extends JPanel implements Runnable {
             // System.out.println(finalmap[x].length);
             for (int y = 0; y < 5; y++) {
                 //System.out.println("bruh");
-
                 finalmap[level][5 * xB + x][5 * yB + y].paint(g);
-                if (rocks[level][5 * xB + x][5 * yB + y].isThere()) {
-                    rocks[level][5 * xB + x][5 * yB + y].paint(g);
+                NormalRock rock = rocks[level][5 * xB + x][5 * yB + y];
+                if (rock != null) {
+                    rock.paint(g);
                 }
-                for (int vore = 0; vore < vores.size(); vore++) {
 
+                for (int vore = 0; vore < vores.size(); vore++) {
                     vores.get(vore).paint(g);
                 }
                 // finalmap[x][y].paint(g);
@@ -129,40 +127,28 @@ public final class RPGButOk extends JPanel implements Runnable {
             if (rockCheck()) {
                 battle.paint(g);
                 if (battleSelector == 0) {
-
                     g.drawOval(65, 540, 25, 25);
                 } else if (battleSelector == 1) {
-
                     g.drawOval(455, 540, 25, 25);
                 } else if (battleLayer >= 1) {
                     battle.updateLevel();
                     System.out.println("cool");
-                }else if(battleSelector == 0 && battleLayer == 1) {
-                
-                
-                    g.drawOval(65, 540, 25, 25);
-                }else if(battleSelector == 1 && battleLayer == 1) {
-                
-                 g.drawOval(455, 540, 25, 25);
+                } else if (battleLayer == 1) {
+                    if (battleSelector == 0) {
+                        g.drawOval(65, 540, 25, 25);
+                    } else if (battleSelector == 1) {
+                        g.drawOval(455, 540, 25, 25);
+                    }
                 }
                 isBattle = true;
             }
         } catch (IOException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         if (q) {
             exitCheck();
         }
-        //g.setColor(getBackground());
-        //g.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
-        // g.fillRect(0, 0, getWidth(), getHeight());
-        //  String vro = scnr.next();
-        //   int tempX = imageX
-        //try {
-        //   vro = new BabyOnBoard(imageX + 50, imageY + 25);
-        //} catch (IOException ex) {
-        //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        //}
+
         if (isBattle == false) {
             if (counter30 < 15) {
                 if (isRight) {
@@ -180,7 +166,6 @@ public final class RPGButOk extends JPanel implements Runnable {
 
                 } else {
                     g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
-
                 }
             }
         }
@@ -209,9 +194,8 @@ public final class RPGButOk extends JPanel implements Runnable {
         counter20++;
         // g.setFont(new Font("Arial", Font.BOLD, 25));
         if (bruh) {
-            vores.add(new Vore1255((int) (Math.random() * 800), (int) (Math.random() * 800), (int) (Math.random() * 100)));
+            vores.add(new Vore1255(rand.nextInt(800), rand.nextInt(800), rand.nextInt(100)));
 
-            //g.drawImage(god, (int) (Math.random() * 800),  (int) (Math.random() * 800),  (int) (Math.random() * 100),  (int) (Math.random() * 100), null);
             bruh = false;
         }
 
@@ -288,10 +272,10 @@ public final class RPGButOk extends JPanel implements Runnable {
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
-
-                if (rocks[level][5 * xB + r][5 * yB + c].intersects(bigBruh) && rocks[level][5 * xB + r][5 * yB + c].isThere()) {
-                    battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote(), battleLayer, battleSelector, choice);
-                    //System.out.println(rocks[level][5 * xB + r][5 * yB + c].getX() + "," + rocks[level][5 * xB + r][5 * yB + c].getY());
+                NormalRock rock = rocks[level][5 * xB + r][5 * yB + c];
+                if (rock != null && rock.intersects(bigBruh)) {
+                    battle = new BattleScreen(0, rock.getQuote(), battleLayer, battleSelector, choice);
+                    // System.out.println(rock.getX() + "," + rock.getY());
                     return true;
                 }
             }
@@ -306,9 +290,9 @@ public final class RPGButOk extends JPanel implements Runnable {
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
-
-                if (rocks[level][5 * xB + r][5 * yB + c].intersects(vro) && rocks[level][5 * xB + r][5 * yB + c].isThere()) {
-                    rocks[level][5 * xB + r][5 * yB + c].setIsAlive(false);
+                NormalRock rock = rocks[level][5 * xB + r][5 * yB + c];
+                if (rock != null && rock.intersects(vro)) {
+                    rock.setIsAlive(false);
                 }
             }
 
@@ -436,7 +420,7 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        for (;/* (;-;) */;) {
+        for (;/* (;-;) */ ; ) {
             repaint();
             // cgiludtsgkuihfgdmudr :)
             counter30++;
