@@ -1,29 +1,17 @@
 package rpgbutok;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
 public class BabyOnBoard {
 
-    private static final BufferedImage BABY;
+    private static final BufferedImage BABY = 
+            Utilities.getImageSafe("/resources/theTransAMMUNITION.png");
     private static final HashMap<Integer, Image> BABY_CACHE = new HashMap<>();
     private static final Random RAND = new Random();
-
-    static {
-        BufferedImage temp = null;
-        try {
-            temp = ImageIO.read(new File("theTransAMMUNITION.png"));
-        } catch (IOException ioe) {
-        } finally {
-            BABY = temp;
-        }
-    }
 
     private Rectangle2D.Double hitbox;
     private double posX, posY, dy, dx;

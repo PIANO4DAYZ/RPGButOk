@@ -17,6 +17,7 @@ public class WindowRPG {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame();
+            // System.out.println(RPGButOk.class);
             RPGButOk rpgButOk = new RPGButOk();
             frame.add(rpgButOk);
             // frame.setSize(818, 840);
