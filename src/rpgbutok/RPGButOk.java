@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -42,7 +43,9 @@ public final class RPGButOk extends JPanel implements Runnable {
     int imageY = 0;
     int xLength = 150;
     int yLength = 100;
+    Scanner scnr = new Scanner(new File("src/rpgbutok/Intro"));
     BattleScreen battle;
+    boolean intro;
     boolean isBattle;
     boolean touchRock;
     boolean space;
@@ -65,6 +68,7 @@ public final class RPGButOk extends JPanel implements Runnable {
     }
 
     public RPGButOk() throws IOException {
+
         quotes.add("oh no bro");
         quotes.add("coochie");
         quotes.add("hoho your mom is gOYYYYYYY");
@@ -85,6 +89,7 @@ public final class RPGButOk extends JPanel implements Runnable {
         battle = new BattleScreen(0, "bad", 0, 0, -1);
         space = false;
         bruh = false;
+        intro = true;
         isBattle = false;
         for (int a = 0; a < finalmap.length; a++) {
             int stairX = (int) (Math.random() * 20);
@@ -141,145 +146,163 @@ public final class RPGButOk extends JPanel implements Runnable {
         //System.out.println(bruh);
     }*/
     public static void main(String[] args) throws IOException, FileNotFoundException {
-        //Scanner scnr = new Scanner(new File("src/rpgbutok/bruh.txt"));
 
         WindowRPG AHHHHHH = new WindowRPG();
 
     }
 
+    int cnt2 = -1;
+    String line = null;
+
     @Override
     public void paint(Graphics g) {
 
-        checkArea();
-        try {
-            rockCheckAndChange();
-        } catch (IOException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            bulletCheck();
-        } catch (IOException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        /* try {
+        if (scnr.hasNextLine()) {
+            if (line == null || cnt2 > line.length()) {
+                cnt2 = 0;
+                line = scnr.nextLine();
+            }
+            g.setColor(getBackground());
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.black);
+            g.drawString(line.substring(0, cnt2), 100, 100);
+
+            if (cnt2 < line.length()) {
+                cnt2++;
+            }
+
+        } else {
+            cnt2 = -1;
+
+            checkArea();
+            try {
+                rockCheckAndChange();
+            } catch (IOException ex) {
+                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                bulletCheck();
+            } catch (IOException ex) {
+                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /* try {
             rockCheck();
         } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-        //     if(imageX > 800);
+            //     if(imageX > 800);
 
-        for (int x = 0; x < 5; x++) {
-            // System.out.println(finalmap[x].length);
-            for (int y = 0; y < 5; y++) {
-                //System.out.println("bruh");
+            for (int x = 0; x < 5; x++) {
+                // System.out.println(finalmap[x].length);
+                for (int y = 0; y < 5; y++) {
+                    //System.out.println("bruh");
 
-                finalmap[level][5 * xB + x][5 * yB + y].paint(g);
-                if (rocks[level][5 * xB + x][5 * yB + y].hmm()) {
+                    finalmap[level][5 * xB + x][5 * yB + y].paint(g);
+                    if (rocks[level][5 * xB + x][5 * yB + y].hmm()) {
 
-                    rocks[level][5 * xB + x][5 * yB + y].paint(g);
+                        rocks[level][5 * xB + x][5 * yB + y].paint(g);
+                    }
+                    for (int vore = 0; vore < vores.size(); vore++) {
+
+                        vores.get(vore).paint(g);
+                    }
+                    // finalmap[x][y].paint(g);
                 }
-                for (int vore = 0; vore < vores.size(); vore++) {
-
-                    vores.get(vore).paint(g);
-                }
-                // finalmap[x][y].paint(g);
             }
-        }
-        try {
-            
-            if (rockCheck()) {
-                battle.paint(g);
-                if (battleSelector == 0) {
+            try {
 
-                    g.drawOval(65, 540, 25, 25);
-                } else if (battleSelector == 1) {
+                if (rockCheck()) {
+                    battle.paint(g);
+                    if (battleSelector == 0) {
 
-                    g.drawOval(455, 540, 25, 25);
-                } else if (battleLayer >= 1) {
-                    battle.updateLevel();
-                    System.out.println("cool");
-                }else if(battleSelector == 0 && battleLayer == 1) {
-                
-                
-                    g.drawOval(65, 540, 25, 25);
-                }else if(battleSelector == 1 && battleLayer == 1) {
-                
-                 g.drawOval(455, 540, 25, 25);
+                        g.drawOval(65, 540, 25, 25);
+                    } else if (battleSelector == 1) {
+
+                        g.drawOval(455, 540, 25, 25);
+                    } else if (battleLayer >= 1) {
+                        battle.updateLevel();
+                        System.out.println("cool");
+                    } else if (battleSelector == 0 && battleLayer == 1) {
+
+                        g.drawOval(65, 540, 25, 25);
+                    } else if (battleSelector == 1 && battleLayer == 1) {
+
+                        g.drawOval(455, 540, 25, 25);
+                    }
+                    isBattle = true;
                 }
-                isBattle = true;
+            } catch (IOException ex) {
+                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if (q) {
-            exitCheck();
-        }
-        //g.setColor(getBackground());
-        //g.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
-        // g.fillRect(0, 0, getWidth(), getHeight());
-        //  String vro = scnr.next();
-        //   int tempX = imageX
-        //try {
-        //   vro = new BabyOnBoard(imageX + 50, imageY + 25);
-        //} catch (IOException ex) {
-        //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        //}
-        if (isBattle == false) {
-            if (frameShift < 15) {
+            if (q) {
+                exitCheck();
+            }
+            //g.setColor(getBackground());
+            //g.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
+            // g.fillRect(0, 0, getWidth(), getHeight());
+            //  String vro = scnr.next();
+            //   int tempX = imageX
+            //try {
+            //   vro = new BabyOnBoard(imageX + 50, imageY + 25);
+            //} catch (IOException ex) {
+            //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+            //}
+            if (isBattle == false) {
+                if (frameShift < 15) {
+                    if (isRight) {
+                        g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+                    } else {
+                        g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+                    }
+                } else {
+                    if (isRight && space) {
+                        g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
+                    } else if (space) {
+                        g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
+                    } else if (isRight) {
+                        g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+
+                    } else {
+                        g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+
+                    }
+                }
+            }
+            for (int z = 0; z < babies.size(); z++) {
+                BabyOnBoard baby = babies.get(z);
+                baby.moveBaby();
+                if (baby.getY() < -baby.getSize() || baby.getY() > 800
+                        || baby.getX() < -baby.getSize() || baby.getX() > 800) {
+                    // kill the baby
+                    babies.remove(z);
+                }
+                baby.paint(g);
+            }
+
+            if (sad && counter % 20 == 0) {
+                BabyOnBoard bb = new BabyOnBoard(imageX + 50, imageY + 25);
                 if (isRight) {
-                    g.drawImage(piece, imageX, imageY, xLength, yLength, null);
+                    bb.setDX(Math.abs(bb.getDX()));
                 } else {
-                    g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
+                    bb.setDX(-Math.abs(bb.getDX()));
                 }
-            } else {
-                if (isRight && space) {
-                    g.drawImage(pieceTwo, imageX + xLength, imageY, -xLength, yLength, null);
-                } else if (space) {
-                    g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
-                } else if (isRight) {
-                    g.drawImage(piece, imageX, imageY, xLength, yLength, null);
-
-                } else {
-                    g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
-
-                }
+                babies.add(bb);
+                //babies.add(new BabyOnBoard())
+                //window.drawImage(ammo, imageX + 35, imageY + 20, 50, 50, null);
+                //sad = false;
+                counter = 0;
             }
-        }
-        for (int z = 0; z < babies.size(); z++) {
-            BabyOnBoard baby = babies.get(z);
-            baby.moveBaby();
-            if (baby.getY() < -baby.getSize() || baby.getY() > 800
-                    || baby.getX() < -baby.getSize() || baby.getX() > 800) {
-                // kill the baby
-                babies.remove(z);
+            counter++;
+            // g.setFont(new Font("Arial", Font.BOLD, 25));
+            if (bruh) {
+                vores.add(new Vore1255((int) (Math.random() * 800), (int) (Math.random() * 800), (int) (Math.random() * 100)));
+
+                //g.drawImage(god, (int) (Math.random() * 800),  (int) (Math.random() * 800),  (int) (Math.random() * 100),  (int) (Math.random() * 100), null);
+                bruh = false;
             }
-            baby.paint(g);
+
+            drawButton(g);
         }
-
-        if (sad && counter % 20 == 0) {
-            BabyOnBoard bb = new BabyOnBoard(imageX + 50, imageY + 25);
-            if (isRight) {
-                bb.setDX(Math.abs(bb.getDX()));
-            } else {
-                bb.setDX(-Math.abs(bb.getDX()));
-            }
-            babies.add(bb);
-            //babies.add(new BabyOnBoard())
-            //window.drawImage(ammo, imageX + 35, imageY + 20, 50, 50, null);
-            //sad = false;
-            counter = 0;
-        }
-        counter++;
-        // g.setFont(new Font("Arial", Font.BOLD, 25));
-        if (bruh) {
-            vores.add(new Vore1255((int) (Math.random() * 800), (int) (Math.random() * 800), (int) (Math.random() * 100)));
-
-            //g.drawImage(god, (int) (Math.random() * 800),  (int) (Math.random() * 800),  (int) (Math.random() * 100),  (int) (Math.random() * 100), null);
-            bruh = false;
-        }
-
-        drawButton(g);
-
     }
 
     public void wipeBabies() {
@@ -447,73 +470,87 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     public void keyPressed(KeyEvent e) {
         // System.out.println(e.getKeyCode());
-        if (isBattle == false) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_W:
-                    if (level < 4) {
-                        level++;
-                    }
-                    break;
-                case KeyEvent.VK_S:
-                    if (level > 0) {
-                        level--;
-                    }
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    isRight = true;
-                    imageX += 10;
-                    break;
-                case KeyEvent.VK_DOWN:
-                    imageY += 10;
-                    break;
-                case KeyEvent.VK_LEFT:
-                    isRight = false;
-                    imageX -= 10;
-                    break;
-                case KeyEvent.VK_UP:
-                    imageY -= 10;
-                    break;
-                case KeyEvent.VK_SPACE:
-                    sad = !sad;
-                    space = !space;
-                    break;
-                case KeyEvent.VK_Q:
-                    q = true;
-
-                    break;
+        if (cnt2 == -1) {
+            if (isBattle == false) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_W:
+                        if (level < 4) {
+                            level++;
+                        }
+                        break;
+                    case KeyEvent.VK_S:
+                        if (level > 0) {
+                            level--;
+                        }
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        isRight = true;
+                        imageX += 10;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        imageY += 10;
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        isRight = false;
+                        imageX -= 10;
+                        break;
+                    case KeyEvent.VK_UP:
+                        imageY -= 10;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        sad = !sad;
+                        space = !space;
+                        break;
+                    case KeyEvent.VK_Q:
+                        q = true;
+                        
+                        break;
+                }
+            } else {
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT && battleSelector < 1) {
+                    
+                    battleSelector++;
+                } else if (e.getKeyCode() == KeyEvent.VK_LEFT && battleSelector > 0) {
+                    
+                    battleSelector--;
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector < 1) {
+                    battleLayer++;
+                    choice = 0;
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector > 0) {
+                    battleLayer++;
+                    choice = 1;
+                }
+                
             }
         } else {
-            if (e.getKeyCode() == KeyEvent.VK_RIGHT && battleSelector < 1) {
-
-                battleSelector++;
-            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && battleSelector > 0) {
-
-                battleSelector--;
-            } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector < 1) {
-                battleLayer++;
-                choice = 0;
-            } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector > 0) {
-                battleLayer++;
-                choice = 1;
+            if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (cnt2 == line.length()) {
+                    cnt2++;
+                } else {
+                    cnt2 = line.length();
+                }
             }
-
         }
     }
 
     @Override
     public void run() {
-        for (;/* (;-;) */;) {
-            repaint();
-            // cgiludtsgkuihfgdmudr :)
-            frameShift++;
-            frameShift %= 30;
+        try {
+            for (;/* (;-;) */;) {
+                repaint();
+                // cgiludtsgkuihfgdmudr :)
+                frameShift++;
+                frameShift %= 30;
 
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+                try {
+                    Thread.sleep(16);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
