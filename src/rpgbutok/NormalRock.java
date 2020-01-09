@@ -1,83 +1,139 @@
 package rpgbutok;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
+/**
+ * A totally normal rock.
+ *
+ * @author Brighton Liu, Jed Wang
+ */
 public class NormalRock {
 
+    /**
+     * The hitbox of this NormalRock
+     */
     private Rectangle2D.Double hitbox;
+
+    /**
+     * An images of an rocks
+     */
     private static final Image ROCK, DEAD;
+
+    /**
+     * An immutable array of quotes that the rock knows.
+     */
+    private static final String[] QUOTES = new String[]{"oh no bro", "coochie",
+            "hoho your mom is gOYYYYYYY", "vro not my habanero deviled egos",
+            "did you know that 98 percent of\n"
+                    + "virgins within the american states\n"
+                    + "actually originate frtom the small\n"
+                    + "southern country of the middle east,\n"
+                    + "when the arabians took over lord gigalent.\n"
+                    + "He was a evil and dangerous man, y el\n"
+                    + "era muyyyyyyyyyyyyyyyyyyyy disordenado.\n"
+                    + "Pero, el es muy guapo, y es un aguacate."
+    };
+
+    /**
+     * The quote of this rock
+     */
     private String quote;
 
     static {
-        Image temp = null;
-        try {
-            temp = ImageIO.read(new File("normalrock.jpg"))
-                    .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        } catch (IOException ex) {
-            Logger.getLogger(NormalRock.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            ROCK = temp;
-        }
-        try {
-            temp = ImageIO.read(new File("deadrock.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        } catch (IOException ex) {
-            Logger.getLogger(NormalRock.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DEAD = temp;
-        }
-
+        ROCK = Utilities.getImageSafe("/resources/normalrock.jpg")
+                .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        DEAD = Utilities.getImageSafe("/resources/deadrock.png")
+                .getScaledInstance(30, 30, Image.SCALE_SMOOTH);
     }
-    boolean there;
-    int x;
-    int y;
-    Image rock;
 
-    public NormalRock(int a, int b, boolean c, String quote) throws IOException {
-        this.quote = quote;
+    /**
+     * The x-coordinate of this rock
+     */
+    private int x;
+    /**
+     * The y-coordinate of this rock
+     */
+    private int y;
+    /**
+     * Whether this rock is alive or not
+     */
+    private boolean isAlive;
+
+    /**
+     * Creates a new rock
+     *
+     * @param a the x-coordinate of the rock
+     * @param b the y-coordinate of the rock
+     */
+    public NormalRock(int a, int b) {
+        this.quote = QUOTES[(int) (Math.random() * QUOTES.length)];
         x = a;
         y = b;
-        there = c;
         hitbox = new Rectangle2D.Double(a, b, 30, 30);
-        rock = ROCK;
+        isAlive = true;
     }
 
+    /**
+     * Returns the x-coordinate of this rock
+     *
+     * @return the x-coordinate of this rock
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Returns the y-coordinate of this rock
+     *
+     * @return the y-coordinate of this rock
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * Paints this NormalRock
+     *
+     * @param window the Graphics to use
+     */
     public void paint(Graphics window) {
-
-        window.drawImage(rock, x, y, null);
+        window.drawImage(getImage(), x, y, null);
     }
 
+    /**
+     * Determines whether the given Rectangle intersects with this NormalRock's hitbox
+     *
+     * @param other the other hitbox to check
+     * @return whether this NormalRock intersects with the given Rectangle
+     */
     public boolean intersects(Rectangle2D other) {
         return hitbox.intersects(other);
     }
 
-    public void live() throws IOException {
-        rock = ROCK;
+    /**
+     * Returns the image to use to draw this NormalRock
+     *
+     * @return the image to use to draw this NormalRock
+     */
+    private Image getImage() {
+        return isAlive ? ROCK : DEAD;
     }
 
-    public void die() throws IOException {
-        rock = DEAD;
+    /**
+     * Sets whether this rock is alive or not
+     *
+     * @param isAlive whether this rock is to be alive or not
+     */
+    public void setIsAlive(boolean isAlive) {
+        this.isAlive = isAlive;
     }
 
-    public boolean hmm() {
-        return there;
-    }
-
+    /**
+     * Returns the quote that this NormalRock uses.
+     *
+     * @return the quote that this NormalRock uses.
+     */
     public String getQuote() {
         return quote;
     }

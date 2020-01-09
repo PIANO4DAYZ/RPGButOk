@@ -1,73 +1,55 @@
 package rpgbutok;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 public final class RPGButOk extends JPanel implements Runnable {
 
     //BabyOnBoard vro = null;
-    ColumbusGuy[][][] finalmap = new ColumbusGuy[5][20][20];
-
-    NormalRock[][][] rocks = new NormalRock[5][20][20];
-    ArrayList<BabyOnBoard> babies = new ArrayList<>();
-    ArrayList<Vore1255> vores = new ArrayList<>();
-    int frameShift;
-    int xB = 0;
-    int yB = 0;
-    int tR = 0;
-    int tC = 0;
-    int battleSelector;
-    int choice;
-    int battleLayer;
-    int level = 0;
-    int counter = 0;
-    int ahhstinky = 125;
-    int imageX = 0;
-    int imageY = 0;
-    int xLength = 150;
-    int yLength = 100;
-    Scanner scnr = new Scanner(new File("src/rpgbutok/Intro"));
-    BattleScreen battle;
-    boolean intro;
-    boolean isBattle;
-    boolean touchRock;
-    boolean space;
-    boolean bruh;
-    boolean q = false;
-    boolean pressed = false;
-    boolean sad = false, isRight = true;
+    private Scanner scnr;
     public ArrayList<String> quotes = new ArrayList<>();
-    private static BufferedImage ammo, piece, god, pieceTwo;
+    private ColumbusGuy[][][] finalmap = new ColumbusGuy[5][20][20];
+
+    private NormalRock[][][] rocks = new NormalRock[5][20][20];
+    private ArrayList<BabyOnBoard> babies = new ArrayList<>();
+    private ArrayList<Vore1255> vores = new ArrayList<>();
+    private int counter30, xB = 0, yB = 0, level = 0,
+            imageX = 0, imageY = 0, battleSelector, battleLayer,
+            choice, counter = 0;
+    private final int xLength = 150, yLength = 100;
+    private BattleScreen battle;
+    private boolean touchRock, space, bruh, q = false, pressed = false,
+            sad = false, isRight = true, isBattle, intro;
+    private static final BufferedImage piece, pieceTwo;
+
+    private Random rand = new Random();
 
     static {
-        try {
-            god = ImageIO.read(new File("oh no.png"));
-            ammo = ImageIO.read(new File("theAMMUNITION.png"));
-            piece = ImageIO.read(new File("YES.jpg"));
-            pieceTwo = ImageIO.read(new File("chomp.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        piece = Utilities.getImageSafe("/resources/YES.jpg");
+        pieceTwo = Utilities.getImageSafe("/resources/chomp.jpg");
+        System.out.println("pieceTwo: " + pieceTwo);
     }
 
-    public RPGButOk() throws IOException {
+    public RPGButOk() {
+        try {
+            scnr = new Scanner(new File("src/rpgbutok/Intro"));
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
 
         quotes.add("oh no bro");
         quotes.add("coochie");
@@ -81,6 +63,7 @@ public final class RPGButOk extends JPanel implements Runnable {
                 + "He was a evil and dangerous man, y el\n"
                 + "era muyyyyyyyyyyyyyyyyyyyy disordenado.\n"
                 + "Pero, el es muy guapo, y es un aguacate.");
+
         touchRock = false;
         level = 0;
         battleSelector = 0;
@@ -92,26 +75,18 @@ public final class RPGButOk extends JPanel implements Runnable {
         intro = true;
         isBattle = false;
         for (int a = 0; a < finalmap.length; a++) {
-            int stairX = (int) (Math.random() * 20);
-            int stairY = (int) (Math.random() * 20);
+            int stairX = rand.nextInt(20);
+            int stairY = rand.nextInt(20);
             for (int r = 0; r < finalmap[a].length; r++) {
                 for (int c = 0; c < finalmap[a][r].length; c++) {
-                    tR = r % 5;
-                    tC = c % 5;
-                    if (Math.random() < 1.0 / 3) {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130),
-                                tC * 160 + (int) (Math.random() * 130), true, quotes.get((int) (Math.random() * quotes.size())));
-                    } else {
-                        rocks[a][r][c] = new NormalRock(tR * 160 + (int) (Math.random() * 130),
-                                tC * 160 + (int) (Math.random() * 130), false, quotes.get((int) (Math.random() * quotes.size())));
+                    int tR = r % 5;
+                    int tC = c % 5;
+                    if (rand.nextInt(3) == 0) {
+                        rocks[a][r][c] = new NormalRock(tR * 160 + rand.nextInt(130),
+                                tC * 160 + rand.nextInt(130));
                     }
-                    if ((r == stairX) && (c == stairY)) {
-
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, a, (int) (Math.random() * 2) == 0, true);
-
-                    } else {
-                        finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160, a, (int) (Math.random() * 2) == 0, false);
-                    }
+                    finalmap[a][r][c] = new ColumbusGuy(tR * 160, tC * 160,
+                            a, rand.nextBoolean(), (r == stairX) && (c == stairY));
                 }
 
             }
@@ -175,59 +150,46 @@ public final class RPGButOk extends JPanel implements Runnable {
             cnt2 = -1;
 
             checkArea();
-            try {
-                rockCheckAndChange();
-            } catch (IOException ex) {
-                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                bulletCheck();
-            } catch (IOException ex) {
-                Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            rockCheckAndChange();
+            bulletCheck();
             /* try {
             rockCheck();
-        } catch (IOException ex) {
+            } catch (IOException ex) {
             Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-            //     if(imageX > 800);
+            }*/ //     if(imageX > 800);
 
             for (int x = 0; x < 5; x++) {
                 // System.out.println(finalmap[x].length);
                 for (int y = 0; y < 5; y++) {
                     //System.out.println("bruh");
-
                     finalmap[level][5 * xB + x][5 * yB + y].paint(g);
-                    if (rocks[level][5 * xB + x][5 * yB + y].hmm()) {
-
-                        rocks[level][5 * xB + x][5 * yB + y].paint(g);
+                    NormalRock rock = rocks[level][5 * xB + x][5 * yB + y];
+                    if (rock != null) {
+                        rock.paint(g);
                     }
-                    for (int vore = 0; vore < vores.size(); vore++) {
 
+                    for (int vore = 0; vore < vores.size(); vore++) {
                         vores.get(vore).paint(g);
                     }
                     // finalmap[x][y].paint(g);
                 }
             }
             try {
-
                 if (rockCheck()) {
                     battle.paint(g);
                     if (battleSelector == 0) {
-
                         g.drawOval(65, 540, 25, 25);
                     } else if (battleSelector == 1) {
-
                         g.drawOval(455, 540, 25, 25);
                     } else if (battleLayer >= 1) {
                         battle.updateLevel();
                         System.out.println("cool");
-                    } else if (battleSelector == 0 && battleLayer == 1) {
-
-                        g.drawOval(65, 540, 25, 25);
-                    } else if (battleSelector == 1 && battleLayer == 1) {
-
-                        g.drawOval(455, 540, 25, 25);
+                    } else if (battleLayer == 1) {
+                        if (battleSelector == 0) {
+                            g.drawOval(65, 540, 25, 25);
+                        } else if (battleSelector == 1) {
+                            g.drawOval(455, 540, 25, 25);
+                        }
                     }
                     isBattle = true;
                 }
@@ -237,18 +199,9 @@ public final class RPGButOk extends JPanel implements Runnable {
             if (q) {
                 exitCheck();
             }
-            //g.setColor(getBackground());
-            //g.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
-            // g.fillRect(0, 0, getWidth(), getHeight());
-            //  String vro = scnr.next();
-            //   int tempX = imageX
-            //try {
-            //   vro = new BabyOnBoard(imageX + 50, imageY + 25);
-            //} catch (IOException ex) {
-            //   Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-            //}
+
             if (isBattle == false) {
-                if (frameShift < 15) {
+                if (counter30 < 15) {
                     if (isRight) {
                         g.drawImage(piece, imageX, imageY, xLength, yLength, null);
                     } else {
@@ -261,10 +214,8 @@ public final class RPGButOk extends JPanel implements Runnable {
                         g.drawImage(pieceTwo, imageX, imageY, xLength, yLength, null);
                     } else if (isRight) {
                         g.drawImage(piece, imageX, imageY, xLength, yLength, null);
-
                     } else {
                         g.drawImage(piece, imageX + xLength, imageY, -xLength, yLength, null);
-
                     }
                 }
             }
@@ -310,13 +261,13 @@ public final class RPGButOk extends JPanel implements Runnable {
     }
 
     public void exitCheck() {
-        Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+        Rectangle2D.Double bigBruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
                 ColumbusGuy temp = finalmap[level][5 * xB + r][5 * yB + c];
 
-                if (temp.getExit() && temp.intersects(bruh)) {
+                if (temp.getExit() && temp.intersects(bigBruh)) {
                     if (level < 4) {
                         finalmap[level + 1][5 * xB + r][5 * yB + c].setExit();
 
@@ -336,20 +287,20 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     }
 
-    public void bulletCheck() throws IOException {
-
+    public void bulletCheck() {
         for (int x = 0; x < babies.size(); x++) {
             for (int r = 0; r < 5; r++) {
                 for (int c = 0; c < 5; c++) {
-                    Rectangle2D.Double bruh = new Rectangle2D.Double(babies.get(x).getX(), babies.get(x).getY(), babies.get(x).getSize(), babies.get(x).getSize());
-                    if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh)) {
+                    Rectangle2D.Double bigBruh = new Rectangle2D.Double(
+                            babies.get(x).getX(), babies.get(x).getY(),
+                            babies.get(x).getSize(), babies.get(x).getSize());
+                    NormalRock rock = rocks[level][5 * xB + r][5 * yB + c];
+                    if (rock != null && rock.intersects(bigBruh)) {
                         //System.out.println("life is good");
-                        rocks[level][5 * xB + r][5 * yB + c].live();
+                        rock.setIsAlive(true);
                     }
                 }
-
             }
-
         }
     }
 
@@ -367,15 +318,14 @@ public final class RPGButOk extends JPanel implements Runnable {
     }
 
     public boolean rockCheck() throws IOException {
-
-        Rectangle2D.Double bruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
+        Rectangle2D.Double bigBruh = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
-
-                if (rocks[level][5 * xB + r][5 * yB + c].intersects(bruh) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
-                    battle = new BattleScreen(0, rocks[level][5 * xB + r][5 * yB + c].getQuote(), battleLayer, battleSelector, choice);
-                    //System.out.println(rocks[level][5 * xB + r][5 * yB + c].getX() + "," + rocks[level][5 * xB + r][5 * yB + c].getY());
+                NormalRock rock = rocks[level][5 * xB + r][5 * yB + c];
+                if (rock != null && rock.intersects(bigBruh)) {
+                    battle = new BattleScreen(0, rock.getQuote(), battleLayer, battleSelector, choice);
+                    // System.out.println(rock.getX() + "," + rock.getY());
                     return true;
                 }
             }
@@ -384,16 +334,15 @@ public final class RPGButOk extends JPanel implements Runnable {
         return false;
     }
 
-    public void rockCheckAndChange() throws IOException {
+    public void rockCheckAndChange() {
 
         Rectangle2D.Double vro = new Rectangle2D.Double(imageX, imageY, xLength, yLength);
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
-
-                if (rocks[level][5 * xB + r][5 * yB + c].intersects(vro) && rocks[level][5 * xB + r][5 * yB + c].hmm()) {
-
-                    rocks[level][5 * xB + r][5 * yB + c].die();
+                NormalRock rock = rocks[level][5 * xB + r][5 * yB + c];
+                if (rock != null && rock.intersects(vro)) {
+                    rock.setIsAlive(false);
                 }
             }
 
@@ -408,7 +357,6 @@ public final class RPGButOk extends JPanel implements Runnable {
                 xB--;
                 wipeBabies();
             } else {
-
                 imageX = 0;
             }
 
@@ -419,7 +367,6 @@ public final class RPGButOk extends JPanel implements Runnable {
                 xB++;
                 wipeBabies();
             } else {
-
                 imageX = 800 - xLength;
             }
 
@@ -430,7 +377,6 @@ public final class RPGButOk extends JPanel implements Runnable {
                 yB--;
                 wipeBabies();
             } else {
-
                 imageY = 0;
             }
 
@@ -441,7 +387,6 @@ public final class RPGButOk extends JPanel implements Runnable {
                 yB++;
                 wipeBabies();
             } else {
-
                 imageY = 800 - yLength;
             }
         }
@@ -503,15 +448,15 @@ public final class RPGButOk extends JPanel implements Runnable {
                         break;
                     case KeyEvent.VK_Q:
                         q = true;
-                        
+
                         break;
                 }
             } else {
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT && battleSelector < 1) {
-                    
+
                     battleSelector++;
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT && battleSelector > 0) {
-                    
+
                     battleSelector--;
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER && battleSelector < 1) {
                     battleLayer++;
@@ -520,10 +465,10 @@ public final class RPGButOk extends JPanel implements Runnable {
                     battleLayer++;
                     choice = 1;
                 }
-                
+
             }
         } else {
-            if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 if (cnt2 == line.length()) {
                     cnt2++;
                 } else {
@@ -535,23 +480,15 @@ public final class RPGButOk extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        try {
-            for (;/* (;-;) */;) {
-                repaint();
-                // cgiludtsgkuihfgdmudr :)
-                frameShift++;
-                frameShift %= 30;
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleAtFixedRate(() -> {/* (;-;) */
+                    repaint();
+                    // cgiludtsgkuihfgdmudr :)
+                    counter30++;
+                    counter30 %= 30;
 
-                try {
-                    Thread.sleep(16);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(RPGButOk.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    // System.out.println(getWidth() + ", " + getHeight());
+                }, 0, 16, TimeUnit.MILLISECONDS);
     }
 
 }
